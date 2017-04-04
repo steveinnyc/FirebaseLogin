@@ -16,7 +16,7 @@ public class LoginActivity extends AppCompatActivity {
     private EditText emailEditText;
     private EditText passwordEditText;
 
-    private FirebaseAuth mAuth;
+    private FirebaseAuth mAuth = FirebaseAuth.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,7 +26,6 @@ public class LoginActivity extends AppCompatActivity {
         emailEditText = (EditText) findViewById(R.id.edit_text_email);
         passwordEditText = (EditText) findViewById(R.id.edit_text_password);
 
-        mAuth = FirebaseAuth.getInstance();
     }
 
     public void logIn(View view) {
@@ -48,4 +47,25 @@ public class LoginActivity extends AppCompatActivity {
                     }
                 });
     }
+
+    public void SignUp(View view) {
+        String email = emailEditText.getText().toString();
+        String password = passwordEditText.getText().toString();
+
+        mAuth.createUserWithEmailAndPassword(email, password)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (!task.isSuccessful()) {
+                            Toast.makeText(LoginActivity.this, task.getException().toString(), Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(LoginActivity.this, task.getResult().getUser().getEmail() + " signed up successful",
+                                    Toast.LENGTH_SHORT).show();
+                            finish();
+                        }
+
+                    }
+                });
+    }
+
 }
